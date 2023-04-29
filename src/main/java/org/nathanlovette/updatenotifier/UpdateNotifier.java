@@ -23,7 +23,7 @@ public final class UpdateNotifier extends JavaPlugin {
             Objects.requireNonNull(config.getConfig().getConfigurationSection("messages")).getKeys(false);
             new JoinHandler(this, config, playerData);
         } catch (NullPointerException e) {
-            Bukkit.getLogger().log(Level.WARNING, "No message key values found.");
+            Bukkit.getLogger().log(Level.WARNING, "No message key values found. Enter some in config.yml");
         }
 
     }

@@ -9,9 +9,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.nathanlovette.updatenotifier.UpdateNotifier;
 import org.nathanlovette.updatenotifier.util.ConfigUtil;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class JoinHandler implements Listener {
+    private List shortenListToEnd(List list, Integer amount) {
+        if (list.size() > 5) {
+            return list.subList(list.size() - amount, list.size());
+        } else {
+            return list;
+        }
+    }
+
     private List<Integer> stringListToIntList(List<String> stringList) {
         List<Integer> intKeys = new ArrayList<>();
 
@@ -62,16 +71,20 @@ public class JoinHandler implements Listener {
 
 //            Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s missingMessages reads " + missingMessages);
 
-            String alertMessage = loadedConfig.getString("alert-msg");
 
-            if (alertMessage != null) {
-                player.sendMessage(alertMessage);
-            }
-            Bukkit.getLogger().info(alertMessage);
+            if (player.hasPlayedBefore()) {
+                String alertMessage = loadedConfig.getString("alert-msg");
 
-            // Send the messages
-            for (String message : missingMessages) {
-                player.sendMessage("- " + message);
+                // Send the messages
+                if (alertMessage != null) {
+                    player.sendMessage(alertMessage);
+                }
+
+                List<String> shortenedMissingMessages = shortenListToEnd(missingMessages, 5);
+
+                for (String message : shortenedMissingMessages) {
+                    player.sendMessage("- " + message);
+                }
             }
 
             // Now save that those messages were read
