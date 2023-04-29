@@ -62,25 +62,29 @@ public class JoinHandler implements Listener {
 
             Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s missingMessages reads " + missingMessages);
 
-            String alertMessage = loadedConfig.getString("alert");
-            List<String> messagesToSend = new ArrayList<>();
-            messagesToSend.add(alertMessage);
-            messagesToSend.addAll(missingMessages);
+            String alertMessage = loadedConfig.getString("alert-msg");
+
+            if (alertMessage != null) {
+                player.sendMessage(alertMessage);
+            }
 
             // Send the messages
-            for (String message : messagesToSend) {
-                player.sendMessage(message);
+            for (String message : missingMessages) {
+                player.sendMessage("- " + message);
             }
 
             // Now save that those messages were read
             List<Integer> seenDataToSave = new ArrayList<>();
-            seenDataToSave.addAll(messageIntKeys);
+            seenDataToSave.addAll(seenData);
             seenDataToSave.addAll(missingIntegers);
             loadedPlayerData.set(playerUUID + ".seen", seenDataToSave);
             playerData.save();
         }
         else {
-            player.sendMessage("You're caught up!");
+            String caughtUpMsg = loadedConfig.getString("caught-up-msg");
+            if (caughtUpMsg != null) {
+                player.sendMessage(caughtUpMsg);
+            }
         }
     }
 }
