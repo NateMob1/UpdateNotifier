@@ -41,7 +41,7 @@ public class JoinHandler implements Listener {
         FileConfiguration loadedConfig = config.getConfig();
         List<Integer> seenData = loadedPlayerData.getIntegerList(playerUUID + ".seen");
 
-        Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s seenData reads " + seenData);
+//        Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s seenData reads " + seenData);
 
         // Get missing messages
         Set<String> messageKeys = Objects.requireNonNull(loadedConfig.getConfigurationSection("messages")).getKeys(false);
@@ -60,13 +60,14 @@ public class JoinHandler implements Listener {
                 missingMessages.add(selectedMessage);
             }
 
-            Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s missingMessages reads " + missingMessages);
+//            Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s missingMessages reads " + missingMessages);
 
             String alertMessage = loadedConfig.getString("alert-msg");
 
             if (alertMessage != null) {
                 player.sendMessage(alertMessage);
             }
+            Bukkit.getLogger().info(alertMessage);
 
             // Send the messages
             for (String message : missingMessages) {

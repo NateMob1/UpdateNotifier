@@ -17,7 +17,7 @@ public final class UpdateNotifier extends JavaPlugin {
         config.saveDefaultConfig(this);
         playerData.saveDefaultConfig(this);
         // Plugin startup logic
-        Bukkit.getLogger().info("Hello World!");
+//        Bukkit.getLogger().info("Hello World!");
 
         try {
             Objects.requireNonNull(config.getConfig().getConfigurationSection("messages")).getKeys(false);
@@ -31,6 +31,6 @@ public final class UpdateNotifier extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Bukkit.getLogger().info("Goodbye World!");
+//        Bukkit.getLogger().info("Goodbye World!");
     }
 }
