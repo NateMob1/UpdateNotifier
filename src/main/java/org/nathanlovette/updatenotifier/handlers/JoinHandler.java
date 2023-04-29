@@ -9,18 +9,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.nathanlovette.updatenotifier.UpdateNotifier;
 import org.nathanlovette.updatenotifier.util.ConfigUtil;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class JoinHandler implements Listener {
-    private List shortenListToEnd(List list, Integer amount) {
-        if (list.size() > 5) {
-            return list.subList(list.size() - amount, list.size());
-        } else {
-            return list;
-        }
-    }
-
     private List<Integer> stringListToIntList(List<String> stringList) {
         List<Integer> intKeys = new ArrayList<>();
 
@@ -80,9 +71,15 @@ public class JoinHandler implements Listener {
                     player.sendMessage(alertMessage);
                 }
 
-                List<String> shortenedMissingMessages = shortenListToEnd(missingMessages, 5);
+                List<String> missingDisplayMessages;
 
-                for (String message : shortenedMissingMessages) {
+                if (missingMessages.size() > 5) {
+                    missingDisplayMessages = missingMessages.subList(missingMessages.size() - 5, missingMessages.size());
+                } else {
+                    missingDisplayMessages = missingMessages;
+                }
+
+                for (String message : missingDisplayMessages) {
                     player.sendMessage("- " + message);
                 }
             }
