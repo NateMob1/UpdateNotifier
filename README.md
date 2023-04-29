@@ -16,4 +16,6 @@ messages:
   4: bom bom ka ka
  ```
  
- Additionally, `alert-msg` and `caught-up-msg` can be modified or left blank if wanted.
+Additionally, `alert-msg` and `caught-up-msg` can be modified or left blank if wanted.
+
+As the plugin is currently configured, messages don't display if it's the player's first time joining the server, but they are still marked as 'seen'. Additionally, if there are more than unseen five messages for a player, only the five "latest" (highest index in `config.yml`) messages are sent to chat, and the rest are marked as seen by the server.
