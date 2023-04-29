@@ -3,7 +3,7 @@
 #  1: "/sleepvote has been replaced by /skipnight. Same syntax."
 #  2: "Dynmap!"
 
-alert: "Here's what you missed while you were gone:"
+alert: "What's new:"
 
 messages:
   1:
