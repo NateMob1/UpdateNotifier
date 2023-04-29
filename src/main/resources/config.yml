@@ -1,0 +1,9 @@
+#Syntax
+#messages:
+#  1: "/sleepvote has been replaced by /skipnight. Same syntax."
+#  2: "Dynmap!"
+
+alert: "Here's what you missed while you were gone:"
+
+messages:
+  1:

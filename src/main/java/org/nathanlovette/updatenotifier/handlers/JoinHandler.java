@@ -1,18 +1,86 @@
 package org.nathanlovette.updatenotifier.handlers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.nathanlovette.updatenotifier.UpdateNotifier;
+import org.nathanlovette.updatenotifier.util.ConfigUtil;
+
+import java.util.*;
 
 public class JoinHandler implements Listener {
-    public JoinHandler(UpdateNotifier plugin) {
+    private List<Integer> stringListToIntList(List<String> stringList) {
+        List<Integer> intKeys = new ArrayList<>();
+
+        for (String key : stringList) {
+            int intKey = Integer.parseInt(key);
+            intKeys.add(intKey);
+        }
+
+        return intKeys;
+    }
+
+    private ConfigUtil config;
+    private ConfigUtil playerData;
+
+    public JoinHandler(UpdateNotifier plugin, ConfigUtil config, ConfigUtil playerData) {
+        this.config = config;
+        this.playerData = playerData;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().sendMessage("SLAY SLAY SLAY");
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+
+        FileConfiguration loadedPlayerData = playerData.getConfig();
+        FileConfiguration loadedConfig = config.getConfig();
+        List<Integer> seenData = loadedPlayerData.getIntegerList(playerUUID + ".seen");
+
+        Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s seenData reads " + seenData);
+
+        // Get missing messages
+        Set<String> messageKeys = Objects.requireNonNull(loadedConfig.getConfigurationSection("messages")).getKeys(false);
+        List<String> messageKeyList = new ArrayList<>(messageKeys);
+        List<Integer> messageIntKeys = stringListToIntList(messageKeyList);
+
+        List<Integer> missingIntegers = new ArrayList<>(messageIntKeys);
+        missingIntegers.removeAll(seenData);
+
+        if (missingIntegers.size() > 0) {
+
+            List<String> missingMessages = new ArrayList<>();
+            // get their messages
+            for (Integer i : missingIntegers) {
+                String selectedMessage = loadedConfig.getString("messages" + "." + i.toString());
+                missingMessages.add(selectedMessage);
+            }
+
+            Bukkit.getLogger().info("Player " + player.getDisplayName() + "'s missingMessages reads " + missingMessages);
+
+            String alertMessage = loadedConfig.getString("alert");
+            List<String> messagesToSend = new ArrayList<>();
+            messagesToSend.add(alertMessage);
+            messagesToSend.addAll(missingMessages);
+
+            // Send the messages
+            for (String message : messagesToSend) {
+                player.sendMessage(message);
+            }
+
+            // Now save that those messages were read
+            List<Integer> seenDataToSave = new ArrayList<>();
+            seenDataToSave.addAll(messageIntKeys);
+            seenDataToSave.addAll(missingIntegers);
+            loadedPlayerData.set(playerUUID + ".seen", seenDataToSave);
+            playerData.save();
+        }
+        else {
+            player.sendMessage("You're caught up!");
+        }
     }
 }
